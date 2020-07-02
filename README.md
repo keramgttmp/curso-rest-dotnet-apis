@@ -46,4 +46,4 @@ http://rogerdudler.github.io/git-guide/
 7) Ejecutar `git add -A` (agregar todos los archivos)
 8) Ejecutar `git commit -m "Primer commit"`
 9) Ejecutar `git remote add miNombre https://github.com/fulanito123/mi-repo.git`
-10)Ejecutar `git push origin master -f`
+10) Ejecutar `git push origin master -f`
