@@ -1,0 +1,35 @@
+name: Build and Push to Azure Container Registry
+
+on:
+  push:
+    branches:
+      - 'sesion-02'
+    paths:
+    - '.github/workflows/azure-acr-docker.yml'
+    - 'material/WebApp/**'
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.200
+      - uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.ACR_REPOSITORY }}.azurecr.io
+          username: ${{ secrets.ACR_REGISTRY_USERNAME }}
+          password: ${{ secrets.ACR_REGISTRY_PASSWORD }}
+
+      - name: Building Docker Image
+        working-directory: .
+        run: docker build -f material/WebApp/Dockerfile -t ${{ secrets.ACR_REPOSITORY }}.azurecr.io/aspnet-webapp-net3:latest .
+
+      - name: Push the Image
+        working-directory: ./material/WebApp 
+        run: docker push ${{ secrets.ACR_REPOSITORY }}.azurecr.io/aspnet-webapp-net3:latest

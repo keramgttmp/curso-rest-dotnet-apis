@@ -6,7 +6,7 @@ name: ASP.NET Core Demo - Build and deploy ASP.Net Core app
 on:
   push:
     branches:
-      - 'sesion-*'
+      - 'sesion-03'
 
     paths:
     - '.github/workflows/azure-webdeploy.yml'
