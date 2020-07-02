@@ -44,6 +44,6 @@ http://rogerdudler.github.io/git-guide/
 5) Ejecutar `git status` (ver el estado de los archivos)
 6) Agregar un archivo plano (txt, md) con algun tenido
 7) Ejecutar `git add -A` (agregar todos los archivos)
-8) git commit -m "Primer commit"
-9) git remote add miNombre https://github.com/fulanito123/mi-repo.git
-10) git push origin master -f
+8) Ejecutar `git commit -m "Primer commit"`
+9) Ejecutar `git remote add miNombre https://github.com/fulanito123/mi-repo.git`
+10)Ejecutar `git push origin master -f`
