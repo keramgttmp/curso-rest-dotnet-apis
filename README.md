@@ -35,10 +35,15 @@
 
 http://rogerdudler.github.io/git-guide/
 
-1) cd [carpeta del proyecto]
-2) git init (iniciar Git en la carpeta)
-3) git status (ver el estado de los archivos)
-4) git add -A (agregar todos los archivos)
-5) git commit -m "Primer commit"
-6) git remote add miNombre https://github.com/stvansolano/mi-repo.git
-7) git push origin master -f
+
+## Creando un repositorio bajo su cuenta (GitHub)
+1) Crear un repositorio en GitHub bajo su cuenta de usuario. Ejemplo `mi-repo`
+2) Copiar el link del repositorio. Ejemplo: https://github.com/fulanito123/mi-repo.git 
+3) Ir al terminal/linea de comandos y crear una carpeta. Ejemplo `mi-carpeta`
+4) Hacer `cd miCarpeta` y ENTER. Posteriormente `git init` para iniciar Git en la carpeta
+5) Ejecutar `git status` (ver el estado de los archivos)
+6) Agregar un archivo plano (txt, md) con algun tenido
+7) Ejecutar `git add -A` (agregar todos los archivos)
+8) git commit -m "Primer commit"
+9) git remote add miNombre https://github.com/fulanito123/mi-repo.git
+10) git push origin master -f
