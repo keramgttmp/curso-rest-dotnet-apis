@@ -10,7 +10,7 @@ on:
 
     paths:
     - '.github/workflows/azure-webdeploy.yml'
-    - 'material/WebApp'
+    - '/material/WebApp/**'
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
