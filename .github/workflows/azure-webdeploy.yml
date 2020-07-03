@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: ASP.NET Core Demo - Build and deploy ASP.Net Core app 
+name: ASP.NET Core Demo - CI / CD pipeline 
 
 on:
   push:
@@ -29,6 +29,12 @@ jobs:
     - name: dotnet publish
       run: dotnet publish material/WebApp/WebApp.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
+    - name: upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: asp-net-artifact
+        path: ${{env.DOTNET_ROOT}}/myapp
+
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v1
       with:
@@ -36,3 +42,6 @@ jobs:
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_WebApp }}
         package: ${{env.DOTNET_ROOT}}/myapp 
+
+##### Links:
+# - https://github.com/actions/upload-artifact

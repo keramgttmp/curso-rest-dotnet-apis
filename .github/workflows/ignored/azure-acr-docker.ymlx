@@ -1,0 +1,49 @@
+name: Build and Push to Azure Container Registry
+
+on:
+  push:
+    branches:
+      - 'sesion-03'
+    paths:
+    - '.github/workflows/azure-acr-docker.yml'
+    - 'material/WebApp/**'
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      
+    ## - uses: azure/docker-login@v1
+    ##   with:
+    ##     login-server: ${{ secrets.ACR_REPOSITORY }}.azurecr.io
+    ##     username: ${{ secrets.ACR_REGISTRY_USERNAME }}
+    ##     password: ${{ secrets.ACR_REGISTRY_PASSWORD }}
+
+    ## - name: Building Docker Image
+    ##   working-directory: .
+    ##   run: |
+    ##     image=aspnet-webapp-net3
+    ##     tag=$(date +%s)
+    ##     docker build material/WebApp/ -f material/WebApp/Dockerfile -t $image:$tag 
+      - name: List files
+        run: ls material/WebApp/
+
+      - name: Azure Container Registry build & push
+        uses: ams0/acr-task-github-action@v1
+        with:
+          service_principal: ${{ secrets.ACR_SERVICE_PRINCIPAL }}
+          service_principal_password: ${{ secrets.ACR_SERVICE_PRINCIPAL_PASSWORD }}
+          tenant: ${{ secrets.ACR_TENANT }}
+          registry: ${{ secrets.ACR_REGISTRY }}
+          repository: ${{ secrets.ACR_REPOSITORY }}
+          image: aspnet-webapp-net3
+          #tag: latest
+          folder: .
+          dockerfile: material/webapp/Dockerfile
+          
+##### Links:
+# - https://docs.microsoft.com/en-us/azure/container-registry/container-registry-tutorial-prepare-registry
