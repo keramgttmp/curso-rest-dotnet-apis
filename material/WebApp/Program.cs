@@ -21,7 +21,7 @@ namespace WebApp
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>()
-                              .UseUrls("http://+:80;");
+                              .UseUrls("http://+:80;http://+:8080;");
 ;
                 });
     }

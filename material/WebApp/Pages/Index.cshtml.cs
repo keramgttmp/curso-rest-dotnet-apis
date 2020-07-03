@@ -15,6 +15,8 @@ namespace WebApp.Pages
         public IndexModel(ILogger<IndexModel> logger)
         {
             _logger = logger;
+
+            logger.LogInformation("Hello World!");
         }
 
         public void OnGet()
