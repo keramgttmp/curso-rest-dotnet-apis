@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models; //para documentar en Swagger
+using Microsoft.OpenApi.Models;
 
 namespace WebApi
 {
@@ -26,23 +26,19 @@ namespace WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // se agrega CORS
             services.AddCors(options => options.AddDefaultPolicy(builder => {
-                //fluent API
-                // esta configuración es una muy abierta no recomendable para prod
+                
+                // Fluent API
                 builder.AllowAnyOrigin()
                        .AllowAnyMethod()
                        .AllowAnyHeader();
             }));
 
-            //para documentar en Swagger
-            // ver https://localhost:5001/api/index.html
-            //ver https://localhost:5001/swagger/v1/swagger.json
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
             });
-            ////para documentar en Swagger
+
             services.AddControllers();
         }
 
@@ -54,19 +50,16 @@ namespace WebApi
                 app.UseDeveloperExceptionPage();
             }
 
-            //para documentar en Swagger
             app.UseSwagger();
+
             app.UseSwaggerUI(c =>
             {
-                c.RoutePrefix = "api"; // indica la ruta para empezar a desplegar
+                c.RoutePrefix = "";
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
-            //para documentar en Swagger
 
-            //usamos el CORS
             app.UseCors();
-
-            app.UseHttpsRedirection(); //me envía por defecto a https
+            app.UseHttpsRedirection();
 
             app.UseRouting();
 

@@ -8,16 +8,16 @@ using Microsoft.Extensions.Logging;
 namespace WebApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")] //se agrega a la ruta api/ y se mantiene la palabra [controller]
+    [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
         private static readonly string[] Products = new[]
         {
-            "Jeans", "T-Shirt", "Pants"
+            "Jeans", "T-shirt", "Pants"
         };
 
         private readonly ILogger<ProductsController> _logger;
-
+            
         public ProductsController(ILogger<ProductsController> logger)
         {
             _logger = logger;
@@ -27,8 +27,8 @@ namespace WebApi.Controllers
         public ActionResult<IEnumerable<object>> Get()
         {
             int i = 0;
-            var result = Products.Select(model => new
-            {
+
+            var result = Products.Select(model => new { 
                 Name = model,
                 Id = i++
             });
@@ -36,26 +36,20 @@ namespace WebApi.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id}")] //verbo con parámetro se invocaría así http://localhost:5000/api/products/0
-        public object GetById( int id)
+        [HttpGet("{id}")]
+        public object GetById(int id) 
         {
             int i = 0;
-            var result = Products.Select(model => new
-            {
+
+            var result = Products.Select(model => new {
                 Name = model,
                 Id = i++
             }).ToList();
 
             if (result.ElementAtOrDefault(id) == null)
             {
-                //return NotFound("No se encontró el elemento"); //se devuelve como un mensaje 404Not Found ver System.Net.HttpStatusCode
-
-                return NotFound ( new
-                {
-                    Message= "No se encontró el elemento"
-                });
-            }
-
+                return NotFound(new {Message = "No se encuentra el elemento" });
+            }   
             return result[id];
         }
     }

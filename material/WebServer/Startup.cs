@@ -26,8 +26,8 @@ namespace WebServer
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseStaticFiles(); //para user archivo estáticos en wwwroot
-            app.UseDefaultFiles(); //para que use por defecto index.html
+            app.UseStaticFiles();
+            app.UseDefaultFiles();
         }
     }
 }
