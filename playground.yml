@@ -16,7 +16,8 @@ services:
     environment: 
       - ServerUrl=http://webapi:80
     ports:
-      - 80:80
+      # Host : Contenedor
+      - 7000:80
     depends_on: 
       - webapi
 
@@ -24,6 +25,7 @@ services:
     container_name: db-sql-server
     image: stvansolano/adventure-works-sql-server:latest
     ports:
+
       - 1433:1433
     environment:
       SA_PASSWORD: "Password.123"

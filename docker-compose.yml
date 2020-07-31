@@ -1,0 +1,11 @@
+version: '3.4'
+
+services:
+  webapi:
+    image: webapi
+    build:
+      context: .
+      dockerfile: material/WebApi/Dockerfile
+    ports:
+      - 80
+      - 443
