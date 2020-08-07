@@ -1,31 +1,40 @@
+# YAML -> Yet Another Markup Language
+# Online playground: https://katacoda.com/stvansolano/scenarios/docker-dotnet
+
 version: '3.4'
 
 services:
   
   webapi:
     container_name: webapi
-    image: stvansolano/aspnet-webapi-net3
+    #image: stvansolano/aspnet-webapi-net3
+    build:
+      context: material
+      dockerfile: WebApi\Dockerfile
     ports:
       - 8081:80
     depends_on: 
     - db-sql-server
   
   webapp:
-    image: stvansolano/aspnet-webapp-net3
+    #image: stvansolano/aspnet-webapp-net3
+    build:
+      context: material
+      dockerfile: WebApp\Dockerfile
     container_name: webapp
     environment: 
       - ServerUrl=http://webapi:80
     ports:
-      # Host : Contenedor
-      - 7000:80
+      - 8082:80
     depends_on: 
       - webapi
 
   db-sql-server:
     container_name: db-sql-server
+    # AUTHOR/NAME:TAG {latest, alpine, v1, v2, v3}
     image: stvansolano/adventure-works-sql-server:latest
     ports:
-
+      # HOST:CONTAINER
       - 1433:1433
     environment:
       SA_PASSWORD: "Password.123"
@@ -36,4 +45,4 @@ services:
     container_name: play-with-docker
     image: docker/getting-started:pwd
     ports:
-      - 8080:80
+      - 80:80

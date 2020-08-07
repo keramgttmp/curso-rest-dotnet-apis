@@ -25,7 +25,10 @@ namespace WebApp.Pages
         {
             using (var client = new HttpClient ())
             {
-                client.BaseAddress = new Uri("http://localhost:5000/api/" /*Web API*/ );
+                var webApi = System.Environment.GetEnvironmentVariable("ServerUrl");
+                _logger.LogInformation("Web Api: {0}", webApi);
+   
+                client.BaseAddress = new Uri(webApi /*Web API*/ );
 
                 // Request
                 var result = await client.GetStringAsync("products");

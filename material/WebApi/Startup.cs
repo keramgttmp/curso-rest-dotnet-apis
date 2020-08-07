@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using WebApi.Controllers;
+using WebApi.Infrastructure.Data;
 
 namespace WebApi
 {
@@ -34,12 +35,24 @@ namespace WebApi
             // AppSettings
             // Enviroment Variables
 
-            var appSettingsSection = Configuration.GetSection("AppSettings");
-            services.Configure<ApplicationSettings>(appSettingsSection);
 
-            services.AddSingleton<ApplicationSettings>(new ApplicationSettings { 
-                Variable = System.Environment.GetEnvironmentVariable("Variable") ?? "123"  }
-            );
+            // Singleton vrs Transcient
+
+            var applicationSettings = new ApplicationSettings();
+            var appSettingsSection = Configuration.GetSection("AppSettings");
+            appSettingsSection.Bind(applicationSettings);
+            
+            var var1 = Environment.GetEnvironmentVariable("AppSettings__Variable");
+            if (!string.IsNullOrEmpty(var1)) 
+            {
+                applicationSettings.Variable = var1;
+            }
+
+            services.AddSingleton(applicationSettings);
+
+            services.AddDbContext<Infrastructure.AdventureworksContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("DefaultDatabase")));
+
 
             services.AddSingleton<ProductRepository>();
 

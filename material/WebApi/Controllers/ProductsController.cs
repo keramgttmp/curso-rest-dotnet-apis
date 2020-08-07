@@ -53,7 +53,8 @@ namespace WebApi.Controllers
             _repository.Save(name);
 
             var items = _repository.Get();
-            dynamic value = items.Last(); 
+            dynamic value = items.Last();
+
             return CreatedAtAction(nameof(GetById), new { Id = value.Id }, value);
         }
 
@@ -63,12 +64,10 @@ namespace WebApi.Controllers
             return new ObjectResult(new object()) { StatusCode = (int)HttpStatusCode.NotImplemented };
         }
 
-
         [HttpDelete("{id}")]
         public IActionResult Delete(int id) 
         {
             return new ObjectResult(new object()) { StatusCode = (int)HttpStatusCode.NotImplemented };
-        
         }
     }
 }

@@ -1,11 +1,48 @@
+# YAML -> Yet Another Markup Language
+# Online playground: https://katacoda.com/stvansolano/scenarios/docker-dotnet
+
 version: '3.4'
 
 services:
+  
   webapi:
-    image: webapi
+    container_name: webapi
+    #image: stvansolano/aspnet-webapi-net3
     build:
-      context: .
-      dockerfile: material/WebApi/Dockerfile
+      context: material
+      dockerfile: WebApi/Dockerfile
     ports:
-      - 80
-      - 443
+      - 8081:80
+    environment: 
+      - AppSettings__Variable="This is from Docker"
+    depends_on: 
+    - db-sql-server
+  
+  webapp:
+    #image: stvansolano/aspnet-webapp-net3
+    #image: ${DOCKER_REGISTRY-}webapi
+
+    build:
+      context: material
+      dockerfile: WebApp/Dockerfile
+    container_name: webapp
+    environment: 
+      - ServerUrl=http://webapi:80/api/
+      - Variable=123
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - 8082:80
+    depends_on: 
+      - webapi
+
+  db-sql-server:
+    container_name: db-sql-server
+    # AUTHOR/NAME:TAG {latest, alpine, v1, v2, v3}
+    image: stvansolano/adventure-works-sql-server:latest
+    ports:
+      # HOST:CONTAINER
+      # Lo cambio el puerto para que no choque con la bd que tengo local
+      - 14334:1433
+    environment:
+      SA_PASSWORD: "Password.123"
+      ACCEPT_EULA: "Y"
