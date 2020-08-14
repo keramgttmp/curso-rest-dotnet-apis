@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -9,65 +8,55 @@ using Microsoft.Extensions.Logging;
 namespace WebApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]")] //se agrega a la ruta api/ y se mantiene la palabra [controller]
     public class ProductsController : ControllerBase
     {
-        private readonly ILogger<ProductsController> _logger;
-        private readonly ApplicationSettings _settings;
-        private readonly ProductRepository _repository;
+        private static readonly string[] Products = new[]
+        {
+            "Jeans", "T-Shirt", "Pants"
+        };
 
-        public ProductsController(ILogger<ProductsController> logger, 
-                                  ApplicationSettings settings,
-                                  ProductRepository repository)
+        private readonly ILogger<ProductsController> _logger;
+
+        public ProductsController(ILogger<ProductsController> logger)
         {
             _logger = logger;
-            _settings = settings;
-            _repository = repository;
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<object>> Get()
         {
-            var result = _repository.Get();
-
-            _logger.LogInformation("Variable {0}", _settings.Variable);
+            int i = 0;
+            var result = Products.Select(model => new
+            {
+                Name = model,
+                Id = i++
+            });
 
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
-        public object GetById(int id) 
+        [HttpGet("{id}")] //verbo con parámetro se invocaría así http://localhost:5000/api/products/0
+        public object GetById( int id)
         {
-            var result = _repository.Get(id);
-
-            if (result == null)
+            int i = 0;
+            var result = Products.Select(model => new
             {
-                return NotFound(new {Message = "No se encuentra el elemento" });
-            }   
-            return result;
-        }
+                Name = model,
+                Id = i++
+            }).ToList();
 
-        [HttpPost]
-        public IActionResult Create([FromBody] string name) 
-        {
-            _repository.Save(name);
+            if (result.ElementAtOrDefault(id) == null)
+            {
+                //return NotFound("No se encontró el elemento"); //se devuelve como un mensaje 404Not Found ver System.Net.HttpStatusCode
 
-            var items = _repository.Get();
-            dynamic value = items.Last();
+                return NotFound ( new
+                {
+                    Message= "No se encontró el elemento"
+                });
+            }
 
-            return CreatedAtAction(nameof(GetById), new { Id = value.Id }, value);
-        }
-
-        [HttpPut("{id}")]
-        public IActionResult Put(int id) 
-        {
-            return new ObjectResult(new object()) { StatusCode = (int)HttpStatusCode.NotImplemented };
-        }
-
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id) 
-        {
-            return new ObjectResult(new object()) { StatusCode = (int)HttpStatusCode.NotImplemented };
+            return result[id];
         }
     }
 }

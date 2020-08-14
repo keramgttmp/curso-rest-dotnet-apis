@@ -10,65 +10,39 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
-using WebApi.Controllers;
-using WebApi.Infrastructure.Data;
+using Microsoft.OpenApi.Models; //para documentar en Swagger
 
 namespace WebApi
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
+        public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            ApplicationEnvironment = environment;
         }
-
-        public IWebHostEnvironment ApplicationEnvironment { get; }
 
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // In-code
-            // AppSettings
-            // Enviroment Variables
-
-
-            // Singleton vrs Transcient
-
-            var applicationSettings = new ApplicationSettings();
-            var appSettingsSection = Configuration.GetSection("AppSettings");
-            appSettingsSection.Bind(applicationSettings);
-            
-            var var1 = Environment.GetEnvironmentVariable("AppSettings__Variable");
-            if (!string.IsNullOrEmpty(var1)) 
-            {
-                applicationSettings.Variable = var1;
-            }
-
-            services.AddSingleton(applicationSettings);
-
-            services.AddDbContext<Infrastructure.AdventureworksContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("DefaultDatabase")));
-
-
-            services.AddSingleton<ProductRepository>();
-
+            // se agrega CORS
             services.AddCors(options => options.AddDefaultPolicy(builder => {
-                
-                // Fluent API
+                //fluent API
+                // esta configuración es una muy abierta no recomendable para prod
                 builder.AllowAnyOrigin()
                        .AllowAnyMethod()
                        .AllowAnyHeader();
             }));
 
+            //para documentar en Swagger
+            // ver https://localhost:5001/api/index.html
+            //ver https://localhost:5001/swagger/v1/swagger.json
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
             });
-
+            ////para documentar en Swagger
             services.AddControllers();
         }
 
@@ -80,16 +54,19 @@ namespace WebApi
                 app.UseDeveloperExceptionPage();
             }
 
+            //para documentar en Swagger
             app.UseSwagger();
-
             app.UseSwaggerUI(c =>
             {
-                c.RoutePrefix = "";
+                c.RoutePrefix = "api"; // indica la ruta para empezar a desplegar
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
+            //para documentar en Swagger
 
+            //usamos el CORS
             app.UseCors();
-            app.UseHttpsRedirection();
+
+            app.UseHttpsRedirection(); //me envía por defecto a https
 
             app.UseRouting();
 

@@ -20,30 +20,33 @@ namespace WebApp.Pages
             _logger = logger;
         }
 
-
         public async Task<IActionResult> OnGet()
         {
-            using (var client = new HttpClient ())
+            //contenido en System.Net.Http;
+            //se usa using pq el objeto es de una vida muy corta
+            //y una vez que se completa deshecharlo.
+            using ( var client = new HttpClient () ) 
             {
-                var webApi = System.Environment.GetEnvironmentVariable("ServerUrl");
-                _logger.LogInformation("Web Api: {0}", webApi);
-   
-                client.BaseAddress = new Uri(webApi /*Web API*/ );
+                //indicado la uri 
+                client.BaseAddress = new Uri("http://localhost:5000/api/"); /*dirección del web api*/
 
-                // Request
+                //HttpStatusCode a = HttpStatusCode.OK; //200
+
+                //hacemos un request
                 var result = await client.GetStringAsync("products");
 
-                _logger.LogInformation("Response: {0}", result);
+                //escribimos el resultado
+                _logger.LogInformation("Response:{0}", result);
 
-                // Deserializacion (JSON -> Object)
+                //Deserialización (JSON -> Object)
 
                 Product[] models = JsonSerializer.Deserialize<Product[]>(result);
 
-                ViewData["Models"] = models;
+                ViewData["Modesl"] = models;
 
-                // 1) Cambiar Id=>id en Producto
-                // 2) Mostrar los productos en el HTML/Razor
+                //1) Cambiar Id=>id en Producto
 
+                //2) Mostrar los productos en el HTML/Razor
                 return Page();
             }
         }
