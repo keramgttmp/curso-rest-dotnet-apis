@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+
+using System;
 using System.Linq;
 using WebApi.Infrastructure.Data.Models;
 using WebApi.ViewModels;
@@ -9,59 +9,56 @@ namespace WebApi.Controllers
     public class ProductRepository
     {
         public AdventureworksContext UnitOfWork { get; set; }
-        
+
         public ProductRepository(AdventureworksContext dbContext)
         {
+            // UoW
             UnitOfWork = dbContext;
         }
-
-        private readonly List<string> Products = new List<string>
-        {
-            "Jeans", "T-shirt", "Pants"
-        };
 
         public object[] Get()
         {
             return UnitOfWork.Product
-                  .Select(p => new
-                  {
-                      Name = p.Name,
-                      p.ListPrice,
-                          Category = new { p.ProductCategory.Name },
-                      p.Weight
-                  })
-                          .ToArray();
+                             .Select(p => new { 
+                                 Name = p.Name,
+                                 p.ListPrice,
+                                 Category = new { p.ProductCategory.Name },
+                                 p.Weight
+                             })
+                             .ToArray();
         }
 
         public object Get(int id)
         {
+            var query = UnitOfWork.Product
+                                  .Where(p => p.ProductId == id)
+                                  .Select(p => new {
+                                     Name = p.Name,
+                                     p.ListPrice,
+                                     Category = new { p.ProductCategory.Name },
+                                     p.Weight
+                                 })
+                                 .FirstOrDefault();
 
-            var vquery = UnitOfWork.Product
-                .Where(p => p.ProductId == id)
-                .Select(p => new
-                {
-                    Name = p.Name,
-                    p.ListPrice,
-                    Category = new { p.ProductCategory.Name },
-                    p.Weight
-                })
-                .FirstOrDefault();
-            return vquery;
+            return query;
         }
 
         public int Save(ProductViewModel data)
         {
             // Store in DB
-            //Products.Add(name);
-
+            
             var query = UnitOfWork.Set<Product>().AsQueryable();
+            var next = query.Max(p => p.ProductNumber) + 1;
 
-            var next = query.Max(p => p.ProductNumber)+ 1;
+            // 1) Nombre no es requerido
+            // 2) SellStartDate/SellEndDate deben asignarse
+            // 3) ProductNumber debe ser unico
 
-            var model = new Product { Name = data.Name ,
-            SellStartDate = DateTime.Now,
-            SellEndDate = DateTime.Now.AddYears(1),
-            ProductNumber =  next,
+            var model = new Product {
+                Name = data.Name,
+                SellStartDate = DateTime.Now,
+                SellEndDate = DateTime.Now.AddYears(1),
+                ProductNumber = next,
             };
 
             UnitOfWork.Set<Product>().Add(model);
@@ -69,7 +66,6 @@ namespace WebApi.Controllers
             UnitOfWork.SaveChanges();
 
             return model.ProductId;
-
         }
 
         public bool Update(int id, ProductViewModel request)
@@ -77,9 +73,9 @@ namespace WebApi.Controllers
             Product model = UnitOfWork.Product.Find(id);
 
             if (model == null)
-            { return false;
+            {
+                return false;
             }
-
             model.ListPrice = request.ListPrice;
             model.Name = request.Name;
             model.Weight = request.Weight;
@@ -91,15 +87,14 @@ namespace WebApi.Controllers
             return true;
         }
 
-        public bool Delete (int id, ProductViewModel request)
+        public bool Delete(int id) 
         {
             var model = UnitOfWork.Set<Product>().Find(id);
             if (model == null)
             {
                 return false;
             }
-
-            UnitOfWork.Entry(model).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            UnitOfWork.Entry(model).State = Microsoft.EntityFrameworkCore.EntityState.Deleted;
 
             UnitOfWork.SaveChanges();
 

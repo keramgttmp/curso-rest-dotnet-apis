@@ -11,15 +11,15 @@ namespace WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ProductsController : ControllerBase
+    public class CustomerController : ControllerBase
     {
-        private readonly ILogger<ProductsController> _logger;
+        private readonly ILogger<CustomerController> _logger;
         private readonly ApplicationSettings _settings;
-        private readonly ProductRepository _repository;
+        private readonly CustomerRepository _repository;
 
-        public ProductsController(ILogger<ProductsController> logger, 
+        public CustomerController(ILogger<CustomerController> logger,
                                   ApplicationSettings settings,
-                                  ProductRepository repository)
+                                  CustomerRepository repository)
         {
             _logger = logger;
             _settings = settings;
@@ -27,7 +27,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        [Produces(typeof(ProductViewModel))]
+        [Produces(typeof(CustomerViewModel))]
         public ActionResult<IEnumerable<object>> Get()
         {
             var result = _repository.Get();
@@ -38,45 +38,45 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public object GetById(int id) 
+        public object GetById(int id)
         {
             var result = _repository.Get(id);
 
             if (result == null)
             {
-                return NotFound(new {Message = "No se encuentra el elemento" });
-            }   
+                return NotFound(new { Message = "No se encuentra el elemento" });
+            }
             return result;
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] ViewModels.ProductViewModel request) 
+        public IActionResult Create([FromBody] ViewModels.CustomerViewModel request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Parámetros inválidos");
             }
 
-            request.Id = _repository.Save(request);
-                       
-            return CreatedAtAction(nameof(GetById), new { Id = request.Id }, request);
+            request.CustomerId = _repository.Save(request);
+
+            return CreatedAtAction(nameof(GetById), new { Id = request.CustomerId }, request);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody]ProductViewModel request) 
+        public IActionResult Put(int id, [FromBody] CustomerViewModel request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Parámetros inválidos");
             }
 
-            var result = _repository.Update( id, request);
+            var result = _repository.Update(id, request);
 
             return result ? (IActionResult)Ok() : NotFound();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id, [FromBody] ProductViewModel request)
+        public IActionResult Delete(int id, [FromBody] CustomerViewModel request)
         {
 
             var result = _repository.Delete(id, request);

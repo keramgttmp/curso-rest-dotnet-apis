@@ -6,13 +6,14 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using WebApi.Controllers;
-using WebApi.Infrastructure.Data;
+using WebApi.Infrastructure.Data.Models;
 
 namespace WebApi
 {
@@ -36,8 +37,7 @@ namespace WebApi
             // Enviroment Variables
 
 
-            // Singleton vrs Transcient
-
+            // Singleton vrs Transcien
             var applicationSettings = new ApplicationSettings();
             var appSettingsSection = Configuration.GetSection("AppSettings");
             appSettingsSection.Bind(applicationSettings);
@@ -49,12 +49,13 @@ namespace WebApi
             }
 
             services.AddSingleton(applicationSettings);
+            
+            services.AddDbContext<Infrastructure.Data.Models.AdventureworksContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultDatabase")));
 
-            services.AddDbContext<Infrastructure.AdventureworksContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("DefaultDatabase")));
-
-
-            services.AddSingleton<ProductRepository>();
+            // ** Scoped EF Repository
+            services.AddScoped<ProductRepository>();
+            services.AddScoped<CustomerRepository>();
 
             services.AddCors(options => options.AddDefaultPolicy(builder => {
                 

@@ -35,7 +35,7 @@ services:
     image: stvansolano/adventure-works-sql-server:latest
     ports:
       # HOST:CONTAINER
-      - 1433:1433
+      - 14333:14333
     environment:
       SA_PASSWORD: "Password.123"
       ACCEPT_EULA: "Y"

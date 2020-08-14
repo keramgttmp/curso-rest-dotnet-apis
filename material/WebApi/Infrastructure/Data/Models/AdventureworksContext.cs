@@ -31,17 +31,9 @@ namespace WebApi.Infrastructure.Data.Models
         public virtual DbSet<VProductAndDescription> VProductAndDescription { get; set; }
         public virtual DbSet<VProductModelCatalogDescription> VProductModelCatalogDescription { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("data source=localhost,14334;initial catalog=Adventureworks;persist security info=True;user id=sa;password=Password.123;MultipleActiveResultSets=True;App=EntityFramework");
-            }
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // EF Fluent API
             modelBuilder.Entity<Address>(entity =>
             {
                 entity.ToTable("Address", "SalesLT");
